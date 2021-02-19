@@ -1,0 +1,11 @@
+.idea
+*.log
+*.jpg
+*.json
+*.csv
+*.xlsx
+private_settings.py
+
+trend/static/*
+trend/streams/*
+gaming/static/*
