@@ -14,47 +14,66 @@ cursor = pg.pg_cursor()
 
 class Application:
 
-    def __init__(self, products: list, videos: list, images: list, product_uuids: list, name: str, catalog: str):
-        self.name = name
-        self.catalog = catalog
-        self.uuids = product_uuids
-        self.products = products
-        self.images = images
-        self.videos = videos
+    def __init__(self, out_file_path: str, input_file: str):
 
-    def build_migration(self, output_file) -> None:
+        """ Методы и атрибуты(еще называют полями или свойствами) класса, которые не должны быть доступны
+            снаружи(т.е. за пределами класса в котором определены) принято называть с нижним подчеркиванием в начале(одним или двумя).
+            Это не запретит доступ к ним снаружи(в python это к сожалению не возможно без костылей), но нормальные IDE,
+            такие как pyCharm, понимают эти названия и не выдают их в списке автодополнения при наборе кода и
+            подчеркивают их при попытке вызвать снаружи.
+            С двумя подчеркиваниями в начале называют методы и атрибуты которые не доступны с наружи и не доступны
+            в дочерних классах, а с одним подчеркиванием которые не доступные снаружи, но доступны в дочерних классах.
+            """
+
+        # Создаем списки в конструкторе, а не передаем в параметрах.
+        # Даем имена с одним нижнем подчеркиванием, что бы они были доступны в классе RogueCast
+        self._name = []
+        self._catalog = []
+        self._uuids = []
+        self._products = []
+        self._images = []
+        self._videos = []
+        self._out_file_path = out_file_path
+        # Создаем атрибут ссылку на каталог, что бы убрать метод catalog
+        self._catalog = pandas.read_excel(input_file)
+
+    # Убираем параметр пути файла из метода, используем вместо него атрибут класса self._out_file_path
+    # Тоже называем с одним подчеркиванием, т.к. будем вызывать его из класса RogueCast
+    def _build_migration(self) -> None:
         """Write SQL migration to file"""
-        delete_all = sql.DELETE_ALL % (self.uuids, self.uuids, self.uuids)
-        with open(output_file, 'w') as file_handle:
+        delete_all = sql.DELETE_ALL % (self._uuids, self._uuids, self._uuids)
+        with open(self._out_file_path, 'w') as file_handle:
             file_handle.write(sql.PIG_INSERT_ITEMS)
-            for list_item in self.products:
+            for list_item in self._products:
                 file_handle.write('%s\n' % list_item)
             file_handle.write('\n')
-            for list_item in self.videos:
+            for list_item in self._videos:
                 file_handle.write('%s\n' % list_item)
             file_handle.write('\n')
-            for list_item in self.images:
+            for list_item in self._images:
                 file_handle.write('%s\n' % list_item)
             file_handle.write('\n\n-- +pig Down\n')
             file_handle.write(
                 '%s\n' % delete_all.replace("[", "").replace("]", ""))
 
-    def catalog(self, input_file) -> None:
-        """Excel file to pandas"""
-        self.catalog = pandas.read_excel(input_file)
+    # Удаляем метод получения каталога. теперь для него есть атрибут _catalog
+    # def catalog(self, input_file) -> None:
+    #     """Excel file to pandas"""
+    #     self._catalog = pandas.read_excel(input_file)
 
 
 class RogueCast(Application):
 
+    # Путь к каталогу передаем снаружи через конструктор
     # catalog_path = r'/Users/AlekseiMalinovsky/Downloads/RogueCast\ Catalogue.xlsx'
 
-    def __init__(self):
-        super().__init__(self.products, self.videos, self.images, self.uuids, self.name, self.catalog)
+    def __init__(self, out_file_path: str, input_file: str):
+        super().__init__(out_file_path, input_file)
 
     def parse_excel(self, product_rage: List[int], check_resource: bool) -> None:
         """gaming catalog"""
 
-        for _idx, cols in self.catalog.iterrows():
+        for _idx, cols in self._catalog.iterrows():
             item_id = cols['#']
             if cols['Ready for upload?'] != 'Yes':
                 continue
@@ -133,7 +152,7 @@ class RogueCast(Application):
 
             if price == 'EOL':
                 product_delete = sql.GAMING_UPDATE_DELETED_AT
-                self.products.append(product_delete % (str(product_id)))
+                self._products.append(product_delete % (str(product_id)))
                 continue
 
             price = str(price).replace('\\xa0', '').strip()
@@ -197,14 +216,14 @@ class RogueCast(Application):
 
             if is_new:
                 product_update = sql.GAMING_UPDATE_PRODUCTS
-                self.products.append(product_update % (properties_str, str(product_id)))
+                self._products.append(product_update % (properties_str, str(product_id)))
                 continue
 
             product_uuid = str(uuid.uuid4())
-            self.uuids.append(product_uuid)
+            self._uuids.append(product_uuid)
             product = sql.GAMING_INSERT_PRODUCTS
 
-            self.products.append(
+            self._products.append(
                 product % (product_title, '', category_uuid, product_uuid, '', product_uuid, properties_str))
 
             file_name = utils.to_link_str(cols['MFG'])
@@ -220,9 +239,15 @@ class RogueCast(Application):
                 utils.check_remote_resource(product_cover, str_id)
 
             image = sql.INSERT_IMAGES
-            self.images.append(image % (product_uuid, product_image))
+            self._images.append(image % (product_uuid, product_image))
 
             video_uuid = str(uuid.uuid4())
             video = sql.INSERT_VIDEOS
-            self.videos.append(video % (product_uuid, video_uuid, 1, product_video, product_cover))
+            self._videos.append(video % (product_uuid, video_uuid, 1, product_video, product_cover))
 
+            # Вызываем метод _build_migration родительского класса для записи в файл
+            self._build_migration()
+
+            # Можно вызывать через super, что бы явно указать (для себя) что вызывается метод родительского класса
+            # (но это дело вкуса, я так не делаю)
+            # super()._build_migration()
