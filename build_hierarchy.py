@@ -6,7 +6,7 @@ from db.pg import pg_cursor
 from hierarchy.get_params import get_params
 from hierarchy.hierarchy import Hierarchy
 from settings import GAMING_ID, WIM_ID
-from sql import CATEGORY_BY_PARENT_ID, CATEGORY_BY_ID, PIG_UPDATE_HIERARCHY
+from db.sql import CATEGORY_BY_PARENT_ID, CATEGORY_BY_ID, PIG_UPDATE_HIERARCHY
 
 cursor = pg_cursor()
 

@@ -6,10 +6,8 @@ import math
 import uuid
 from typing import List, Tuple
 
-import pandas as pd
-
 import settings
-import sql
+from db import sql
 from db.pg import pg_cursor
 from utils import check_remote_resource, is_none, get_category, str_replace, to_link_str
 

@@ -2,7 +2,7 @@ import math
 
 from db.pg import pg_cursor
 from settings import BLACK_PARAMS, DISPLAY_NAMES
-from sql import PRODUCTS_PROPERTIES
+from db.sql import PRODUCTS_PROPERTIES
 
 cursor = pg_cursor()
 

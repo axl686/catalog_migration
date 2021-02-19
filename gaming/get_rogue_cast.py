@@ -5,11 +5,9 @@ import json
 import os
 import uuid
 from typing import List, Tuple
-# import numpy as np
-# import pandas as pd
 
 import settings
-import sql
+from db import sql
 from db.pg import pg_cursor
 from utils import represents_int, check_remote_resource, get_category, str_replace, is_none, to_link_str
 
