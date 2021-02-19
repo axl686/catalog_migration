@@ -73,6 +73,14 @@ class RogueCast(Application):
     def parse_excel(self, product_rage: List[int], check_resource: bool) -> None:
         """gaming catalog"""
 
+        # Очищаем списки что бы удалить из них данные предидущего парсинга
+        self._name.clear()
+        self._catalog.clear()
+        self._uuids.clear()
+        self._products.clear()
+        self._images.clear()
+        self._videos.clear()
+
         for _idx, cols in self._catalog.iterrows():
             item_id = cols['#']
             if cols['Ready for upload?'] != 'Yes':
