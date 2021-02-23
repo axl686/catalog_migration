@@ -7,7 +7,7 @@ from settings import (
 
 INSERT_COLLECTIONS = "INSERT INTO product_collections (collection_id, product_id) VALUES ('%s', '%s');"
 INSERT_IMAGES = "INSERT INTO product_images (product_id, position, image_uri) VALUES ('%s', 1, E'%s');"
-INSERT_VIDEOS = "INSERT INTO product_videos (product_id, video_id, position, video_uri, cover_image_uri, start_time, video_title) VALUES ('%s', '%s', %i, '%s', E'%s', '00:00:00', 'Product Video');"
+INSERT_VIDEOS = "INSERT INTO product_videos (product_id, video_id, position, video_uri, cover_image_uri, start_time, video_title) VALUES ('%s', '%s', %i, E'%s', E'%s', '00:00:00', 'Product Video');"
 DELETE_ALL = """
 DELETE FROM product_images WHERE product_id IN (%s);
 DELETE FROM product_videos WHERE product_id IN (%s);
@@ -69,4 +69,4 @@ GAMING_UPDATE_PRODUCTS = f"UPDATE products SET properties='%s', updated_at=now()
 GAMING_INSERT_PRODUCTS = f"INSERT INTO products (title, description, category_id, id, store_id, owner_user_id, shop_id, url, product_id, properties) VALUES (E'%s', E'%s', '%s', '%s', '{GAMING_STORE_ID}', '{OWNER_USER_ID}', '{GAMING_SHOP_ID}', E'%s', '%s', '%s');"
 
 # WIM
-WIM_INSERT_PRODUCTS = f"INSERT INTO products (title, description, category_id, id, store_id, owner_user_id, shop_id, brand_id, product_id, properties) VALUES (E'%s', E'%s', E'%s', E'%s', '{WIM_STORE_ID}', '{OWNER_USER_ID}', E'%s', E'%s', E'%s', E'%s');"
+WIM_INSERT_PRODUCTS = f"INSERT INTO products (title, description, category_id, id, store_id, owner_user_id, shop_id, brand_id, product_id, properties) VALUES (E'%s', E'%s', '%s', '%s', '{WIM_STORE_ID}', '{OWNER_USER_ID}', '%s', '%s', '%s', '%s');"

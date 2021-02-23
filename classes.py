@@ -1,78 +1,44 @@
 import pandas
-import requests
 
-from sql import DELETE_ALL, PIG_INSERT_ITEMS
+from db import sql
 
 
-class Application:
+class Application(object):
 
-    def __init__(self, products: list, videos: list, images: list, product_uuids: list, name: str, catalog: str):
-        self.name = name
-        self.catalog = catalog
-        self.uuids = product_uuids
-        self.products = products
-        self.images = images
-        self.videos = videos
+    def __init__(self, input_file: str, out_file_path: str):
 
-    def build_migration(self, output_file) -> None:
+        """
+        Методы и атрибуты(еще называют полями или свойствами) класса, которые не должны быть доступны
+        снаружи(т.е. за пределами класса в котором определены) принято называть с нижним подчеркиванием в начале.
+        Это не запретит доступ к ним снаружи(в python это к сожалению не возможно без костылей), но нормальные IDE,
+        такие как pyCharm, понимают эти названия и не выдают их в списке автодополнения при наборе кода и
+        подчеркивают их при попытке вызвать снаружи.
+        С двумя подчеркиваниями в начале называют методы и атрибуты которые не доступны с наружи и не доступны
+        в дочерних классах, а с одним подчеркиванием которые не доступные снаружи, но доступны в дочерних классах.
+        """
+
+        # Создаем списки в конструкторе, а не передаем в параметрах.
+        # Даем имена с одним нижнем подчеркиванием, что бы они были доступны только в дочернем классе
+        self._uuids = []
+        self._products = []
+        self._images = []
+        self._videos = []
+
+        self._catalog = pandas.read_excel(input_file, engine='openpyxl')
+        self._out_file_path = out_file_path
+
+    def _build_migration(self) -> None:
         """Write SQL migration to file"""
-        delete_all = DELETE_ALL % (self.uuids, self.uuids, self.uuids)
-        with open(output_file, 'w') as file_handle:
-            file_handle.write(PIG_INSERT_ITEMS)
-            for list_item in self.products:
+        delete_all = sql.DELETE_ALL % (self._uuids, self._uuids, self._uuids)
+        with open(self._out_file_path, 'w') as file_handle:
+            file_handle.write(sql.PIG_INSERT_ITEMS)
+            for list_item in self._products:
                 file_handle.write('%s\n' % list_item)
             file_handle.write('\n')
-            for list_item in self.videos:
+            for list_item in self._videos:
                 file_handle.write('%s\n' % list_item)
             file_handle.write('\n')
-            for list_item in self.images:
+            for list_item in self._images:
                 file_handle.write('%s\n' % list_item)
             file_handle.write('\n\n-- +pig Down\n')
-            file_handle.write(
-                '%s\n' % delete_all.replace("[", "").replace("]", ""))
-
-    def catalog(self, input_file) -> None:
-        """Excel file to pandas"""
-        self.catalog = pandas.read_excel(input_file)
-
-
-class RogueCast(Application):
-
-    catalog = r'/Users/AlekseiMalinovsky/Downloads/RogueCast\ Catalogue.xlsx'
-
-    def __init__(self):
-        super().__init__(self.products, self.videos, self.images, self.uuids, self.name, self.catalog)
-
-
-
-
-
-
-
-
-
-RC_CATALOG_URL = 'https://perfectartco-my.sharepoint.com/:x:/g/personal/sergey_bakulin_perfectart_com/EYlnqr9boyBLn7KNK5SBdM0Br7srtA-vkUAdUhkQt3cOhA'
-headers = {'Accept': 'application/json;odata=verbose'}
-guid = 'EYlnqr9boyBLn7KNK5SBdM0Br7srtA-vkUAdUhkQt3cOhA'
-r = requests.get(RC_CATALOG_URL, headers=headers)
-
-rc = "https://perfectartco-my.sharepoint.com/_api/web/lists/GetByTitle('RogueCast Catalogue')/Items(4)"
-
-r = requests.post(
-"https://intranet-uat-gb.mysp2016.com/clients/_api/Web/Lists/GetByTitle('RogueCast Catalogue')/Items(4)",
-verify=False,
-auth=auth,
-data={
-'__metadata': {
-'type': 'SP.Data.TestlistListItem'
-},
-"Title": "Something better",
-}),
-headers={
-'X-RequestDigest': form_digest,
-'content-type': "application/json;odata=verbose",
-'Accept': "application/json",
-"X-HTTP-Method": "MERGE",
-"IF-MATCH": etag,
-},
-
+            file_handle.write('%s\n' % delete_all.replace("[", "").replace("]", ""))
