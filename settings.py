@@ -4,6 +4,14 @@ OWNER_USER_ID = 'fd05c79a-ebfe-418d-83ab-4b372dde7b53'
 WIM_ID = '62446ccf-7351-4ced-a4c4-df818ba9a9f6'
 WIM_URL = 'https://d2whmjegel90p1.cloudfront.net'
 WIM_STORE_ID = 'bc4497d4-6140-4700-bd62-c3ec6f752981'
+SIZE_MAP = {
+    "small": "S",
+    "medium": "M",
+    "large": "L",
+    "extra small": "XS",
+    "extra large": "XL",
+    "one size": "OS"
+}
 
 # GAMING
 GAMING_ID = '6823b27b-0b34-4fbd-9bdb-fd4c5c9801a8'
@@ -86,3 +94,9 @@ BLACK_PARAMS = [
     "variantId",
     "\"Size", "rGB"  # FIXME
 ]
+CATEGORY_MAP = {
+  "VGA": "GPU",
+  "PSU": "Power Supply",
+  "Monitor": "Monitors",
+  "Memory": "Internal Memory Module"
+}

@@ -4,7 +4,7 @@ import sys
 
 from db.pg import pg_cursor
 from hierarchy.get_params import get_params
-from hierarchy.hierarchy import Hierarchy
+from hierarchy import Hierarchy
 from settings import GAMING_ID, WIM_ID
 from db.sql import CATEGORY_BY_PARENT_ID, CATEGORY_BY_ID, PIG_UPDATE_HIERARCHY
 
@@ -18,8 +18,8 @@ def get_hierarchy(next_id: str or None, parent_id=None) -> list:
         cursor.execute(CATEGORY_BY_ID, (next_id,))
 
     records = cursor.fetchall()
-
     children = []
+
     for row in records:
         print('category: ', row[1])  # category check
         item = Hierarchy(app_id=row[0], name=row[1], description=row[2], image_uri=row[4])
