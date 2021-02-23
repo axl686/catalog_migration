@@ -1,74 +1,50 @@
 # Создание транзакций по продуктовым каталогам
 
-В корне 3 папки gaming, trend, wim. В них хранятся промежуточные результаты работы скриптов.
+Для обновления иерархии необходимо подключить репозиторий к тестовому энву: `dev / sit` в `.private_settings.py`
 
 
 ## Генерация транзакции происходит через скрипт parse_doc, принимает аргументы:
 
-- Тип каталога gaming, trend, wim
+- Тип каталога gaming, wim
 
 - Вход xlsx файл
 
 - Выход sql файл
 
-- Проверять прилинкованные к продуктом ресурсы `True\False`, необходимо чтобы проверить доступность картинок и видео в сдн
+- Проверять прилинкованные к продуктом ссылки `True\False`, необходимо чтобы проверить доступность картинок и видео в сдн
 
-- Начало и конец номера продукта, справедливо для гейминга
+- Стартовый и конечный номера продуктов для RogueCast
 
 
 ## Для генерации продуктов в RogueCast необходимо:
 
-- Скачать последнюю версию "RogueCast Catalogue.xlsx" и положить в `gaming.xlsx`
+- Скачать последнюю версию "RogueCast Catalogue.xlsx"
 
-- Выполнить команду, где 1 и 100 это начало и конец номера # из эксельки
+- Выполнить команду, где 2 и 100 это начало и конец номера # из эксельки
 ```shell script
-python parse_doc.py gaming gaming/catalog.xlsx gaming/migration.sql True 2 100
+python parse_doc.py /Users/AlekseiMalinovsky/Downloads/RogueCast\ Catalogue.xlsx gaming/catalog.xlsx gaming/migration.sql True 2 100
 ```
-- Положить транзакцию `migration.sql` в репозиторий store и катануть в `dev-sit-demo-prod`  
+- Положить транзакцию `migration.sql` в репозиторий `en22-cms-service` и катануть в `dev-sit-demo-prod`
 
-- Проставить в онлайн доке `IDs` чтобы можно было обновлять уже занесенные продукты
-
-
-## Для генерации продуктов в Wim необходимо:
-
-- Выкачать `json` датасеты и положить в папку `wim` ссылки на ресурсы с логинами и паролями тут `https://perfectart.atlassian.net/browse/GA22-2`
-
-- Получить продукты вим и положить в `wim/products-wim.xlsx`
-
-- Чтобы положить недостающие данные в новую таблицу - выполнить:  
-```shell script
-python wim_attributes.py
-```
-
-- Чтобы сгенерировать вставку новых продуктов - выполнить:
-```shell script
-python parse_doc.py wim wim/output.xlsx wim/migration.sql True
-```
-
-- Положить транзакцию `migration.sql` в репозиторий store и катануть в `dev-sit-demo-prod`  
-
-
-## Для генерации продуктов в кинд необходимо:
-
-- Положить обновленный каталог в `trend/catalog.xlsx`
-
-- Положить картинки для новых товаров в `trend/static`, предварительно дизайнер обрабатыват картинки и кладет их в `S3`
-
-- Выполнить:
-```shell script
-python parse_doc.py trend trend/Catalog.xlsx trend/migration.sql True
-```
-
-- Положить транзакцию `migration.sql` в репозиторий `store` и катануть в `dev-sit-demo-prod`  
-
-
-## Для создания иерархии каталога (нужно в основном для гейминга) необходимо:
-
-- необходимо выполнять для добавления новой категории или новых фильтров
+- После добавления новых продуктов, необходимо обновить иерархию (фильтры категорий)
 
 - Выполнить:
 ```shell script
 python build_hierarchy.py gaming gaming/hierarchy.sql
 ```
 
-- Положить транзакцию в репозиторий `store` и катануть в `dev-sit-demo-prod` 
+- Положить транзакцию `hierarchy.sql` в репозиторий `en22-cms-service` и катануть в `dev-sit-demo-prod`
+
+- Проставить в онлайн доке `product_id / variant_id`, чтобы можно было обновлять уже занесенные продукты
+
+
+## Для генерации продуктов в Wim необходимо:
+
+- Получить продукты вим и положить например в `wim/products-wim.xlsx`
+
+- Чтобы сгенерировать вставку новых продуктов - выполнить:
+```shell script
+python parse_doc.py wim wim/products-wim.xlsx wim/migration.sql True
+```
+
+- Положить транзакцию `migration.sql` в репозиторий `en22-cms-service` и катануть в `dev-sit-demo-prod`  
