@@ -1,9 +1,14 @@
 import psycopg2
 
-import gaming.hierarchy
 from private_settings import POSTGRES_DEV
 
 
 def pg_cursor(credentials=POSTGRES_DEV):
     conn = psycopg2.connect(**credentials)
-    return gaming.hierarchy.cursor()
+    return conn.cursor()
+
+
+def pg_execute(query: str, params=None) -> list:
+    cursor = pg_cursor()
+    cursor.execute(query, (params,))
+    return cursor.fetchall()

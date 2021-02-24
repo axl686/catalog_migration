@@ -4,19 +4,16 @@ import sys
 
 from gaming.hierarchy import Hierarchy
 from settings import GAMING_ID, WIM_ID
-from utils.pg import pg_cursor
+from utils.pg import pg_execute
 from utils.sql import CATEGORY_BY_PARENT_ID, CATEGORY_BY_ID, PIG_UPDATE_HIERARCHY
-
-cursor = pg_cursor()
 
 
 def get_hierarchy(next_id: str or None, parent_id=None) -> list:
     if parent_id:
-        cursor.execute(CATEGORY_BY_PARENT_ID, (parent_id,))
+        records = pg_execute(CATEGORY_BY_PARENT_ID, (parent_id,))
     else:
-        cursor.execute(CATEGORY_BY_ID, (next_id,))
+        records = pg_execute(CATEGORY_BY_ID, (next_id,))
 
-    records = cursor.fetchall()
     children = []
 
     for row in records:

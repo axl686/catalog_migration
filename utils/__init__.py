@@ -4,10 +4,8 @@ import sys
 import requests
 from numpy import nan
 
+from utils.pg import pg_execute
 from utils.sql import DB_DICTIONARY, DELETE_ALL, PIG_INSERT_ITEMS
-from utils.pg import pg_cursor
-
-cursor = pg_cursor()
 
 
 def represents_int(s) -> bool:
@@ -39,8 +37,8 @@ def is_none(_key):
 
 def get_category(tbl: str, value: str) -> str:
     _uuid = None
-    cursor.execute(DB_DICTIONARY % tbl)
-    rows = cursor.fetchall()
+    rows = pg_execute(DB_DICTIONARY % tbl)
+
     for row_in_db in rows:
         if row_in_db[0].lower() in value.strip().lower():
             _uuid = row_in_db[1]

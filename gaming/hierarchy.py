@@ -4,8 +4,6 @@ import math
 from settings import BLACK_PARAMS, DISPLAY_NAMES
 from utils import pg, sql
 
-cursor = pg.pg_cursor()
-
 
 class Hierarchy(object):
     def __init__(
@@ -32,8 +30,7 @@ class Hierarchy(object):
         )
 
     def get_params(self):
-        cursor.execute(sql.PRODUCTS_PROPERTIES, (self.id,))
-        records = cursor.fetchall()
+        records = pg.pg_execute(sql.PRODUCTS_PROPERTIES, (self.id,))
 
         categories = {}
         if len(records) == 0:
