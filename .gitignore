@@ -4,6 +4,7 @@
 *.json
 *.csv
 *.xlsx
+*.sql
 private_settings.py
 
 trend/static/*
