@@ -4,8 +4,8 @@ import sys
 import requests
 from numpy import nan
 
-from db.sql import DB_DICTIONARY, DELETE_ALL, PIG_INSERT_ITEMS
-from db.pg import pg_cursor
+from utils.sql import DB_DICTIONARY, DELETE_ALL, PIG_INSERT_ITEMS
+from utils.pg import pg_cursor
 
 cursor = pg_cursor()
 

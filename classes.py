@@ -1,6 +1,6 @@
 import pandas
 
-from db import sql
+from utils import sql
 
 
 class Application(object):

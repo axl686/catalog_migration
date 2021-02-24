@@ -2,11 +2,10 @@
 
 import sys
 
-from db.pg import pg_cursor
-from hierarchy.get_params import get_params
-from hierarchy import Hierarchy
+from gaming.hierarchy import Hierarchy
 from settings import GAMING_ID, WIM_ID
-from db.sql import CATEGORY_BY_PARENT_ID, CATEGORY_BY_ID, PIG_UPDATE_HIERARCHY
+from utils.pg import pg_cursor
+from utils.sql import CATEGORY_BY_PARENT_ID, CATEGORY_BY_ID, PIG_UPDATE_HIERARCHY
 
 cursor = pg_cursor()
 
@@ -21,12 +20,10 @@ def get_hierarchy(next_id: str or None, parent_id=None) -> list:
     children = []
 
     for row in records:
-        print('category: ', row[1])  # category check
         item = Hierarchy(app_id=row[0], name=row[1], description=row[2], image_uri=row[4])
-        item.filter = get_params(category_id=row[0])
-
+        print('category: ', item.name)  # category check
         if not item.children:
-            item.children = get_hierarchy(next_id=None, parent_id=row[0])
+            item.children = get_hierarchy(next_id=None, parent_id=item.id)
             if len(item.children) == 0:
                 item.children = None
 
@@ -42,7 +39,7 @@ if __name__ == "__main__":
     app_id = ''
     if app_name == 'gaming':
         app_id = GAMING_ID
-    if app_name == 'wim':
+    elif app_name == 'wim':
         app_id = WIM_ID
 
     h = get_hierarchy(app_id)

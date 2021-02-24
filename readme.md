@@ -11,7 +11,7 @@
 
 - Выход sql файл
 
-- Проверять прилинкованные к продуктом ссылки `True\False`, необходимо чтобы проверить доступность картинок и видео в сдн
+- Проверять прилинкованные к продуктам ссылки `True\False`, необходимо, чтобы проверить доступность картинок и видео в сдн
 
 - Стартовый и конечный номера продуктов для RogueCast
 
@@ -20,7 +20,7 @@
 
 - Скачать последнюю версию "RogueCast Catalogue.xlsx"
 
-- Выполнить команду, где 2 и 100 это начало и конец номера # из эксельки
+- Выполнить команду, где 2 и 100 это начало и конец номера # из Excel
 ```shell script
 python parse_doc.py /Users/AlekseiMalinovsky/Downloads/RogueCast\ Catalogue.xlsx gaming/catalog.xlsx gaming/migration.sql True 2 100
 ```
@@ -42,7 +42,7 @@ python build_hierarchy.py gaming gaming/hierarchy.sql
 
 - Получить продукты вим и положить например в `wim/products-wim.xlsx`
 
-- Чтобы сгенерировать вставку новых продуктов - выполнить:
+- Чтобы сгенерировать вставку новых продуктов — выполнить:
 ```shell script
 python parse_doc.py wim wim/products-wim.xlsx wim/migration.sql True
 ```

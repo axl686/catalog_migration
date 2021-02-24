@@ -3,9 +3,9 @@ import math
 import uuid
 
 import settings
-import utils
+import __init__
 from classes import Application
-from db import pg, sql
+from __init__ import pg, sql
 
 cursor = pg.pg_cursor()
 
@@ -47,17 +47,17 @@ class Wim(Application):
 
             # print(title)  # FIXME check item
 
-            if utils.is_none(price):
+            if __init__.is_none(price):
                 logging.warning(f'{title} has no price!!!')
                 continue
 
-            if utils.is_none(category):
+            if __init__.is_none(category):
                 logging.warning(f'{title} has no category!!!')
                 continue
 
-            category_uuid = utils.get_category(tbl='categories', value=category)
-            brand_uuid = utils.get_category(tbl='brands', value=brand)
-            shop_uuid = utils.get_category(tbl='shops', value=brand)
+            category_uuid = __init__.get_category(tbl='categories', value=category)
+            brand_uuid = __init__.get_category(tbl='brands', value=brand)
+            shop_uuid = __init__.get_category(tbl='shops', value=brand)
 
             styles = []
             properties = []
@@ -110,11 +110,11 @@ class Wim(Application):
             # print(group)  # FIXME check group
 
             for _idx, cols in group.iterrows():
-                video_name = utils.to_link_str(cols['Video #'])
-                if utils.is_none(video_name):
+                video_name = __init__.to_link_str(cols['Video #'])
+                if __init__.is_none(video_name):
                     continue
-                video_name = utils.str_replace(video_name)
-                image_name = utils.to_link_str(sku)
+                video_name = __init__.str_replace(video_name)
+                image_name = __init__.to_link_str(sku)
 
                 product_video = '{}/Product_Videos/v2/{}master.m3u8'.format(settings.WIM_URL, video_name)
                 product_cover = '{}/Product_Videos/v2/{}preview.jpg'.format(settings.WIM_URL, video_name)
@@ -131,9 +131,9 @@ class Wim(Application):
                     video_dict[video_name] = video_uuid
 
                 if check_resource:
-                    utils.check_remote_resource(product_video)
-                    utils.check_remote_resource(product_cover)
-                    utils.check_remote_resource(product_image)
+                    __init__.check_remote_resource(product_video)
+                    __init__.check_remote_resource(product_cover)
+                    __init__.check_remote_resource(product_image)
 
                 # ts = cols["Second Start"]
                 # if len(str(ts)) == 1:

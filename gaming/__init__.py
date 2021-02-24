@@ -4,9 +4,9 @@ import uuid
 from typing import List
 
 import settings
-import utils
+import __init__
 from classes import Application
-from db import pg, sql
+from __init__ import pg, sql
 
 cursor = pg.pg_cursor()
 
@@ -54,7 +54,7 @@ class RogueCast(Application):
             full_attributes = cols['Full attributes']
             upc = cols['UPC']
 
-            is_new = not utils.is_none(product_id)
+            is_new = not __init__.is_none(product_id)
 
             # availability from Excel
             availability = 'in stock'
@@ -70,7 +70,7 @@ class RogueCast(Application):
                     availability = 'out of stock'
 
             prepared_attributes = {}
-            if not utils.is_none(attributes):
+            if not __init__.is_none(attributes):
                 for attr in attributes.split('\n'):
                     values = attr.split(':')
 
@@ -85,7 +85,7 @@ class RogueCast(Application):
                     value = values[1].replace('\\xa0', '').strip()
                     value = value.replace('\\xa0', '').replace('\u200e', '')
 
-                    if utils.represents_int(value):
+                    if __init__.represents_int(value):
                         value = int(value)
 
                     if len(values) == 1:
@@ -95,7 +95,7 @@ class RogueCast(Application):
             # product price can be in several columns
             price = cols['New Rougecast Listing Price, $']
 
-            if utils.is_none(price):
+            if __init__.is_none(price):
                 price = cols['Rougecast Listing Price, $']
 
             if price == 'EOL':
@@ -106,7 +106,7 @@ class RogueCast(Application):
             price = str(price).replace('\\xa0', '').strip()
             price = float(price)
 
-            if utils.is_none(variant_id):
+            if __init__.is_none(variant_id):
                 variant_id = str(variant_id).replace('\n', '').replace('\t', '').strip()
             else:
                 variant_id = str(uuid.uuid4())
@@ -114,11 +114,11 @@ class RogueCast(Application):
             descriptions = []
 
             for description in description_list:
-                if not utils.is_none(description):
+                if not __init__.is_none(description):
                     descriptions.append(str(description))
 
             specifications = None
-            if not utils.is_none(full_attributes):
+            if not __init__.is_none(full_attributes):
                 specifications = full_attributes
 
             image_links = []
@@ -131,7 +131,7 @@ class RogueCast(Application):
                         continue
                     product_image = f'{settings.GAMING_URL}/Product_Desc/{str_id}/{file}'
                     if check_resource:
-                        utils.check_remote_resource(product_image, str_id)
+                        __init__.check_remote_resource(product_image, str_id)
 
                     image_links.append(product_image)
 
@@ -149,7 +149,7 @@ class RogueCast(Application):
                 "specifications": specifications,
                 "images": image_links,
             }
-            if not utils.is_none(upc):
+            if not __init__.is_none(upc):
                 property_['upc'] = upc
 
             property_.update(prepared_attributes)
@@ -157,7 +157,7 @@ class RogueCast(Application):
             properties_str = json.dumps(properties)
             properties_str = str(properties_str).replace("'", "''")
 
-            category_uuid = utils.get_category(tbl='categories', value=category, )
+            category_uuid = __init__.get_category(tbl='categories', value=category, )
 
             product_title = cols['Description'].strip().replace('\n', '')
             product_title = (product_title[:250] + '..') if len(product_title) > 250 else product_title
@@ -174,17 +174,17 @@ class RogueCast(Application):
             self._products.append(
                 product % (product_title, '', category_uuid, product_uuid, '', product_uuid, properties_str))
 
-            file_name = utils.to_link_str(cols['MFG'])
-            file_name = utils.str_replace(file_name)
+            file_name = __init__.to_link_str(cols['MFG'])
+            file_name = __init__.str_replace(file_name)
 
             product_image = f'{settings.GAMING_URL}/Product_Images/2.0/{file_name}_medium.png'
             product_video = f'{settings.GAMING_URL}/Product_Videos/Video/{item_id}/master.m3u8'
             product_cover = f'{settings.GAMING_URL}/Product_Videos/Covers/{file_name}.jpg'
 
             if check_resource:
-                utils.check_remote_resource(product_image, str_id)
-                utils.check_remote_resource(product_video, str_id)
-                utils.check_remote_resource(product_cover, str_id)
+                __init__.check_remote_resource(product_image, str_id)
+                __init__.check_remote_resource(product_video, str_id)
+                __init__.check_remote_resource(product_cover, str_id)
 
             image = sql.INSERT_IMAGES
             self._images.append(image % (product_uuid, product_image))

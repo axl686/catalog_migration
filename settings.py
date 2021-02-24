@@ -13,7 +13,7 @@ SIZE_MAP = {
     "one size": "OS"
 }
 
-# GAMING
+# ROGUE CAST
 GAMING_ID = '6823b27b-0b34-4fbd-9bdb-fd4c5c9801a8'
 GAMING_URL = 'https://dt32ivmrnpnfr.cloudfront.net'
 GAMING_STORE_ID = '1dbf13e4-a02c-425e-8745-a9ebedb932c2'
