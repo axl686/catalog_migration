@@ -95,8 +95,8 @@ def build_migration(
 def to_link_str(s: str) -> str:
     return (
         str(s)
-        .strip()
-        .replace(' ', '_')
+        # .strip()
+        # .replace(' ', '_')
         .replace("'", r"\'")
-        .replace('/', '_')
+        # .replace('/', '_')
     )

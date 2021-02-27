@@ -113,7 +113,7 @@ class Wim(app.Application):
 
                 product_video = '{}/Product_Videos/v2/{}master.m3u8'.format(settings.WIM_URL, video_name)
                 product_cover = '{}/Product_Videos/v2/{}preview.jpg'.format(settings.WIM_URL, video_name)
-                product_image = '{}/Product_Images/batch3/{}.jpg'.format(settings.WIM_URL, image_name)
+                product_image = '{}/Product_Images/batch5/{}.jpg'.format(settings.WIM_URL, image_name)
 
                 image = sql.INSERT_IMAGES
                 self._images.append(image % (product_uuid, product_image))
