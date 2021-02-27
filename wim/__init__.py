@@ -64,7 +64,7 @@ class Wim(app.Application):
                     styles = list(set(styles))
 
                 for size in str(cols["Size"]).split(","):
-                    if size in settings.SIZE_MAP:
+                    if size in settings.SIZE_MAP:  # TODO
                         size = settings.SIZE_MAP[size.strip().lower()]
                     property_ = {
                         "size": size,
