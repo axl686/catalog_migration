@@ -70,3 +70,8 @@ GAMING_INSERT_PRODUCTS = f"INSERT INTO products (title, description, category_id
 
 # WIM
 WIM_INSERT_PRODUCTS = f"INSERT INTO products (title, description, category_id, id, store_id, owner_user_id, shop_id, brand_id, product_id, properties) VALUES (E'%s', E'%s', '%s', '%s', '{WIM_STORE_ID}', '{OWNER_USER_ID}', '%s', '%s', '%s', '%s');"
+PRODUCT_OPTION = f"""
+SELECT property ->> '%s'
+FROM products CROSS JOIN jsonb_array_elements(properties) AS property
+WHERE store_id = '{WIM_STORE_ID}';
+"""

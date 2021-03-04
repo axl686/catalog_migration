@@ -54,12 +54,12 @@ class RogueCast(app.Application):
             if cols['Stock'] == 0:
                 availability = 'out of stock'
             # availability from PostgreSQL
-            if is_new:
-                availability_in_db = pg.pg_execute(sql.PRODUCT_AVAILABILITY % str(product_id))
-                if availability_in_db:
-                    availability = availability_in_db[0][0]
-                else:
-                    availability = 'out of stock'
+            # if is_new:
+            #     availability_in_db = pg.pg_execute(sql.PRODUCT_AVAILABILITY % str(product_id))
+            #     if availability_in_db:
+            #         availability = availability_in_db[0][0]
+            #     else:
+            #         availability = 'out of stock'
 
             prepared_attributes = {}
             if not utils.is_none(attributes):
@@ -149,7 +149,7 @@ class RogueCast(app.Application):
             properties_str = json.dumps(properties)
             properties_str = str(properties_str).replace("'", "''")
 
-            category_uuid = utils.get_category(tbl='categories', value=category, )
+            category_uuid = utils.get_data(tbl='categories', value=category, )
 
             product_title = cols['Description'].strip().replace('\n', '')
             product_title = (product_title[:250] + '..') if len(product_title) > 250 else product_title
@@ -185,5 +185,5 @@ class RogueCast(app.Application):
             video = sql.INSERT_VIDEOS
             self._videos.append(video % (product_uuid, video_uuid, 1, product_video, product_cover))
 
-            # call parent class method _build_migration for write a file
-            self._build_migration()
+        # call parent class method _build_migration for write a file
+        self._build_migration()

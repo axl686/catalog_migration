@@ -35,7 +35,7 @@ def is_none(_key):
     )
 
 
-def get_category(tbl: str, value: str) -> str:
+def get_data(tbl: str, value: str) -> str:
     _uuid = None
     rows = pg_execute(DB_DICTIONARY % tbl)
 

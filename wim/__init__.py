@@ -4,7 +4,7 @@ import uuid
 
 import settings
 import utils
-from utils import app, sql
+from utils import app, pg, sql
 
 
 class Wim(app.Application):
@@ -42,6 +42,12 @@ class Wim(app.Application):
             sku = product_item["SKU"]
             brand = str(product_item["Brand"]).strip()
 
+            sku_in_db = pg.pg_execute(sql.PRODUCT_OPTION % 'sku')
+            for _sku in sku_in_db:
+                if sku in _sku:
+                    logging.warning(f'{sku} already in DB!!!')
+                    continue
+
             if utils.is_none(price):
                 logging.warning(f'{title} has no price!!!')
                 continue
@@ -50,9 +56,9 @@ class Wim(app.Application):
                 logging.warning(f'{title} has no category!!!')
                 continue
 
-            category_uuid = utils.get_category(tbl='categories', value=category)
-            brand_uuid = utils.get_category(tbl='brands', value=brand)
-            shop_uuid = utils.get_category(tbl='shops', value=brand)
+            category_uuid = utils.get_data(tbl='categories', value=category)
+            brand_uuid = utils.get_data(tbl='brands', value=brand)
+            shop_uuid = utils.get_data(tbl='shops', value=brand)
 
             styles = []
             properties = []
@@ -64,8 +70,9 @@ class Wim(app.Application):
                     styles = list(set(styles))
 
                 for size in str(cols["Size"]).split(","):
-                    if size in settings.SIZE_MAP:  # TODO
-                        size = settings.SIZE_MAP[size.strip().lower()]
+                    _size = size.strip().lower()
+                    if _size in settings.SIZE_MAP:
+                        size = settings.SIZE_MAP[_size]
                     property_ = {
                         "size": size,
                         "brand": brand,
@@ -113,7 +120,7 @@ class Wim(app.Application):
 
                 product_video = '{}/Product_Videos/v2/{}master.m3u8'.format(settings.WIM_URL, video_name)
                 product_cover = '{}/Product_Videos/v2/{}preview.jpg'.format(settings.WIM_URL, video_name)
-                product_image = '{}/Product_Images/batch5/{}.jpg'.format(settings.WIM_URL, image_name)
+                product_image = '{}/Product_Images/batch4/{}.jpg'.format(settings.WIM_URL, image_name)
 
                 image = sql.INSERT_IMAGES
                 self._images.append(image % (product_uuid, product_image))
