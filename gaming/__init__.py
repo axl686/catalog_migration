@@ -98,7 +98,7 @@ class RogueCast(app.Application):
             price = str(price).replace('\\xa0', '').strip()
             price = float(price)
 
-            if utils.is_none(variant_id):
+            if not utils.is_none(variant_id):
                 variant_id = str(variant_id).replace('\n', '').replace('\t', '').strip()
             else:
                 variant_id = str(uuid.uuid4())
