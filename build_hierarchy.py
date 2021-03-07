@@ -10,15 +10,16 @@ from utils.sql import CATEGORY_BY_PARENT_ID, CATEGORY_BY_ID, PIG_UPDATE_HIERARCH
 
 def get_hierarchy(next_id: str or None, parent_id=None) -> list:
     if parent_id:
-        records = pg_execute(CATEGORY_BY_PARENT_ID, (parent_id,))
+        categories = pg_execute(CATEGORY_BY_PARENT_ID, (parent_id,))
     else:
-        records = pg_execute(CATEGORY_BY_ID, (next_id,))
+        categories = pg_execute(CATEGORY_BY_ID, (next_id,))
 
     children = []
 
-    for row in records:
-        item = Hierarchy(app_id=row[0], name=row[1], description=row[2], image_uri=row[4])
-        print('category: ', item.name)  # category check
+    for row in categories:
+        item = Hierarchy(cat_id=row[0], name=row[1], description=row[2], image_uri=row[4])
+        item.get_params()
+
         if not item.children:
             item.children = get_hierarchy(next_id=None, parent_id=item.id)
             if len(item.children) == 0:

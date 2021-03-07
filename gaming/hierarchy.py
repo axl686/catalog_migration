@@ -8,13 +8,12 @@ from utils import pg, sql
 class Hierarchy(object):
     def __init__(
             self,
-            app_id: str = None,
+            cat_id: str = None,
             name: str = None,
             description: str = None,
-            # children: list = None,
             image_uri: str = None
     ):
-        self.id = app_id
+        self.id = cat_id
         self.name = name
         self.description = description
         self.filter = {}

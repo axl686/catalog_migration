@@ -5,7 +5,7 @@ from typing import List
 
 import settings
 import utils
-from utils import app, pg, sql
+from utils import app, sql
 
 
 class RogueCast(app.Application):
@@ -64,25 +64,28 @@ class RogueCast(app.Application):
             prepared_attributes = {}
             if not utils.is_none(attributes):
                 for attr in attributes.split('\n'):
-                    values = attr.split(':')
+                    values = attr.split(":")
 
                     if values[0] is None:
                         continue
-                    # if len(values[0].split(' ')) > 1:
-                    #     key = values[0].title().replace(' ', '').replace(',', '')
-                    #     key = key[0].lower() + key[1:]
-                    # else:
-                    #     key = values[0][0].lower() + values[0][1:]
+                    if len(values[0].split(" ")) > 1:
+                        key = values[0].title().replace(" ", "").replace(",", "")
+                        key = key[0].lower() + key[1:]
+                    else:
+                        key = values[0][0].lower() + values[0][1:]
 
                     value = values[1].replace('\\xa0', '').strip()
-                    value = value.replace('\\xa0', '').replace('\u200e', '')
+                    value = value.replace('\\xa0', '').replace("\u200e", "")
 
                     if utils.represents_int(value):
                         value = int(value)
 
                     if len(values) == 1:
-                        value += '; ' + values[0].strip()
+                        value += "; " + values[0].strip()
                         continue
+                    else:
+                        if key != '':
+                            prepared_attributes[key] = value
 
             # product price can be in several columns
             price = cols['New Rougecast Listing Price, $']

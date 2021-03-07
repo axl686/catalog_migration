@@ -3,9 +3,9 @@ Creation insert into DB transaction for new products and resources
 """
 import sys
 
-from gaming import RogueCast
+from gaming.rogue_cast import RogueCast
 from utils import str2bool
-from wim import Wim
+from wim.gallery import Wim
 
 if __name__ == "__main__":
     name = sys.argv[1]
