@@ -20,12 +20,10 @@ class RogueCast(app.Application):
         self._products.clear()
         self._images.clear()
         self._videos.clear()
-
         for _idx, cols in self._catalog.iterrows():
             item_id = cols['#']
             if cols['Ready for upload?'] != 'Yes':
                 continue
-
             if item_id not in product_rage:
                 continue
             print(item_id)  # FIXME check item number

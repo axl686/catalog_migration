@@ -1,6 +1,7 @@
 """Строим иерархию каталога из фильтров по существующим продуктам"""
 
 import sys
+# from progress.bar import IncrementalBar
 
 from gaming.hierarchy import Hierarchy
 from settings import GAMING_ID, WIM_ID
@@ -15,7 +16,7 @@ def get_hierarchy(next_id: str or None, parent_id=None) -> list:
         categories = pg_execute(CATEGORY_BY_ID, (next_id,))
 
     children = []
-
+    # bar = IncrementalBar(max=len(categories))
     for row in categories:
         item = Hierarchy(cat_id=row[0], name=row[1], description=row[2], image_uri=row[4])
         item.get_params()
@@ -26,7 +27,8 @@ def get_hierarchy(next_id: str or None, parent_id=None) -> list:
                 item.children = None
 
         children.append(item),
-
+        # bar.next()
+    # bar.finish()
     return children
 
 
